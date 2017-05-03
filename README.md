@@ -1,17 +1,17 @@
 # Slack
 
-This project started as an embedded package in my Golossary project. After a code review from Brian Ketelsen I was convinced to open source this code as a standalone package.
+This project started as an embedded package in my Golossary project. After a positive code review from Brian Ketelsen I decided to open source this code as a standalone package.
 
 ## Design
 
-This package was heavily influenced by the `net/http` package which allows users to define a `Handler` for a given pattern. The same principle is used for events:
+This package was heavily influenced by the `net/http` package which allows users to define a `Handler` for a given pattern. The same principle is used here for events:
 
 ``` go
     mux := slack.NewEventMux()
     mux.Handle("message", slack.HandlerFunc(RTMMessage))
 ```
 
-In the example above we use the user defined `RTMMessage` function, which satisfies the `Handler` interface, with the `message` event. Similarly, we could apply our  `RTMHello` function to the `hello` event. This might look like:
+In the example above we use the user defined `RTMMessage` function, which satisfies the `Handler` interface with the `message` event. Similarly, we could apply our  `RTMHello` function to the `hello` event. This might look like:
 
 ``` go
     ...
@@ -23,8 +23,10 @@ In the example above we use the user defined `RTMMessage` function, which satisf
 ### Connecting to Slack
 
 To create a new client we first need to run:
+
 `client := slack.NewClient(token, mux)`
 
+You're required to provide an `EventMux` here because it would be a useless client if it didn't know how to handle events. No default Event mux is provided.
 
 To open a connection with Slack you will need to call:
 ``` go
@@ -60,4 +62,3 @@ At this point its really up to the user to shutdown the connection gracefully. H
 		}
 	}
 ```
-

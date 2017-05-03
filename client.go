@@ -17,14 +17,14 @@ const RTMMessage = "message"
 // respRtmStart is the structure of the introductory response
 // from Slack
 type respRtmStart struct {
-	Ok  bool `json:"ok"`
-	URL string `json:"url"`
+	Ok   bool   `json:"ok"`
+	URL  string `json:"url"`
 	Self struct {
-		ID   string `json:"id"`
-		Name string `json:"name"`
+		ID    string `json:"id"`
+		Name  string `json:"name"`
 		Prefs struct {
 		} `json:"prefs"`
-		Created        int `json:"created"`
+		Created        int    `json:"created"`
 		ManualPresence string `json:"manual_presence"`
 	} `json:"self"`
 	Team struct {
@@ -32,11 +32,11 @@ type respRtmStart struct {
 		Name        string `json:"name"`
 		EmailDomain string `json:"email_domain"`
 		Domain      string `json:"domain"`
-		Icon struct {
+		Icon        struct {
 		} `json:"icon"`
-		MsgEditWindowMins int `json:"msg_edit_window_mins"`
+		MsgEditWindowMins int  `json:"msg_edit_window_mins"`
 		OverStorageLimit  bool `json:"over_storage_limit"`
-		Prefs struct {
+		Prefs             struct {
 		} `json:"prefs"`
 		Plan string `json:"plan"`
 	} `json:"team"`
@@ -46,13 +46,13 @@ type respRtmStart struct {
 	Mpims    []interface{} `json:"mpims"`
 	Ims      []interface{} `json:"ims"`
 	Bots     []interface{} `json:"bots"`
-	Error    string       `json:"error"`
+	Error    string        `json:"error"`
 }
 
 // Message is the conversation data structure
 type Message struct {
-	Id   uint64 `json:"id"`
-	Type string    `json:"type"`
+	ID    uint64 `json:"id"`
+	Type  string `json:"type"`
 	Error struct {
 		Code int    `json:"code"`
 		Msg  string `json:"msg"`
@@ -64,27 +64,28 @@ type Message struct {
 	Text    string `json:"text"`
 }
 
+// Client is the slack client object
 type Client struct {
 	id      string
 	conn    *websocket.Conn
-	apiUrl  string
+	apiURL  string
 	token   string
 	counter uint64
 	mux     *EventMux
 }
 
-// NewClient
+// NewClient returns an initialised Client pointer
 func NewClient(token string, mux *EventMux) *Client {
 	return &Client{
-		apiUrl: "https://slack.com/api",
+		apiURL: "https://slack.com/api",
 		token:  token,
 		mux:    mux,
 	}
 }
 
-// start does a rtm.start, and returns a websocket URL and user ID.
+// start performs a rtm.start, and returns a websocket URL and user ID.
 func (c *Client) start() (wsurl string, err error) {
-	url := fmt.Sprintf("%s/rtm.start?token=%s", c.apiUrl, c.token)
+	url := fmt.Sprintf("%s/rtm.start?token=%s", c.apiURL, c.token)
 	resp, err := http.Get(url)
 	if err != nil {
 		return
@@ -175,7 +176,7 @@ func (c *Client) getMessage() (*Message, error) {
 }
 
 func (c *Client) PostMessage(m *Message) error {
-	m.Id = atomic.AddUint64(&c.counter, 1)
+	m.ID = atomic.AddUint64(&c.counter, 1)
 	err := c.conn.WriteJSON(m)
 	if err != nil {
 		return errors.Errorf("Client PostMessage error: %s", err.Error)

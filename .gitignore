@@ -25,5 +25,6 @@ _testmain.go
 
 .idea/
 vendor/
+.vscode/
 
 app_config.toml
